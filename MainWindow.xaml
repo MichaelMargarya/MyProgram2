@@ -16,6 +16,7 @@
                 <StackPanel HorizontalAlignment="Center" Margin="0,0,0,20">
                     <Button Content="Регистрация" Background="#FF7F1C84" Width="120" Foreground="White" FontWeight="Bold" Margin="5"/>
                     <Button Content="Вход" Background="#FF7F1C84" Width="120" Foreground="White" FontWeight="Bold" Margin="5"/>
+                <TextBlock Name="exampleText"  Margin="0 0 0 15" FontWeight="Bold"/>
                 </StackPanel>
                 <Grid Margin="0,0,0,20">
                     <Grid.ColumnDefinitions>

@@ -6,7 +6,8 @@ using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-
+using System.IO;
+using Newtonsoft.Json.Linq;
 namespace MyProgram
 {
     /// <summary>
@@ -15,7 +16,9 @@ namespace MyProgram
     public partial class MainWindow : Window
     {
         SqlConnection sqlConnection;
-
+        string jsontext = File.ReadAllText("config.json");
+       
+       
         public MainWindow()
         {
             InitializeComponent();
@@ -86,29 +89,33 @@ namespace MyProgram
                 return false;
             }
         }
-
         public void Connection()
         {
-            string connection = "Data Source=(localdb)\\ProjectModels;Initial Catalog=master;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
-            sqlConnection = new SqlConnection(connection);
             try
             {
+                string jsontext = File.ReadAllText("config.json");
+                JObject jsonobj = JObject.Parse(jsontext);
+                string connectionString = jsonobj["ConnectionString"].ToString();
+                sqlConnection = new SqlConnection(connectionString);
                 sqlConnection.Open();
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error Conect in DataBase: {ex.Message}");
+                MessageBox.Show($"Error connecting to the database: {ex.Message}");
             }
         }
+
 
         private void InsertData(string login, string pass, string email)
         {
             try
             {
-                var optionsBuilder = new DbContextOptionsBuilder<UserDbContext>();
-                optionsBuilder.UseSqlServer("Data Source=(localdb)\\ProjectModels;Initial Catalog=master;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
+                JObject jsonobj = JObject.Parse(jsontext);
+                string connectionString = jsonobj["ConnectionString"].ToString();
+                var optionsBuilder = new DbContextOptionsBuilder<ApplicationsContext>();
+                optionsBuilder.UseSqlServer(connectionString);
 
-                using (var dbContext = new UserDbContext(optionsBuilder.Options))
+                using (var dbContext = new ApplicationsContext(optionsBuilder.Options))
                 {
                     var user = new User
                     {
